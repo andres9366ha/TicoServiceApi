@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Collaborator;
+use JWTAuth;
 use Illuminate\Http\Request;
 
 class CollaboratorController extends Controller
@@ -29,8 +30,9 @@ class CollaboratorController extends Controller
      */
     public function store(Request $request)
     {
+        $user = JWTAuth::parseToken()->toUser();
         $collaborator = new Collaborator();
-        $collaborator->id_user = $request->input('id_user');
+        $collaborator->id_user = $user->id;
         $collaborator->id_service = $request->input('id_service');
         $collaborator->description = $request->input('description');
         $collaborator->availability = $request->input('availability');

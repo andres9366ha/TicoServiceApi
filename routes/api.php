@@ -51,7 +51,8 @@ Route::post('/service',[
 ]);
 
 Route::put('/service/{id}',[
-    'uses' => 'ServiceController@update'
+    'uses' => 'ServiceController@update',
+    'middleware' => 'auth.jwt'
 ]);
 
 
@@ -68,5 +69,25 @@ Route::post('/comment',[
 ]);
 
 Route::put('/comment/{id}',[
-    'uses' => 'CommentController@update'
+    'uses' => 'CommentController@update',
+    'middleware' => 'auth.jwt'
+]);
+
+
+
+Route::get('/collaborators',[
+    'uses' => 'CollaboratorController@index'
+]);
+
+Route::get('/collaborator/{id}',[
+    'uses' => 'CollaboratorController@show'
+]);
+
+Route::post('/collaborator',[
+    'uses' => 'CollaboratorController@store'
+]);
+
+Route::put('/collaborator/{id}',[
+    'uses' => 'CollaboratorController@update',
+    'middleware' => 'auth.jwt'
 ]);
