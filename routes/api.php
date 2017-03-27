@@ -16,3 +16,40 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/users',[
+    'uses' => 'UserController@index'
+]);
+
+Route::get('/user/{id}',[
+    'uses' => 'UserController@show'
+]);
+
+Route::post('/user', [
+    'uses' => 'UserController@store'
+]);
+
+Route::post('/user/login', [
+    'uses' => 'UserController@login'
+]);
+
+Route::patch('/user/{id}',[
+    'uses' => 'UserController@update'
+]);
+
+Route::get('/services',[
+    'uses' => 'ServiceController@index'
+]);
+
+Route::get('/service/{id}',[
+    'uses' => 'ServiceController@show'
+]);
+
+Route::post('/service',[
+    'uses' => 'ServiceController@store'
+]);
+
+Route::patch('/service/{id}',[
+    'uses' => 'ServiceController@update'
+]);
+
