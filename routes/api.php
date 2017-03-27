@@ -33,8 +33,9 @@ Route::post('/user/login', [
     'uses' => 'UserController@login'
 ]);
 
-Route::patch('/user/{id}',[
-    'uses' => 'UserController@update'
+Route::put('/user/{id}',[
+    'uses' => 'UserController@update',
+    'middleware' => 'auth.jwt'
 ]);
 
 Route::get('/services',[
@@ -49,7 +50,23 @@ Route::post('/service',[
     'uses' => 'ServiceController@store'
 ]);
 
-Route::patch('/service/{id}',[
+Route::put('/service/{id}',[
     'uses' => 'ServiceController@update'
 ]);
 
+
+Route::get('/comments',[
+    'uses' => 'CommentController@index'
+]);
+
+Route::get('/comment/{id}',[
+    'uses' => 'CommentController@show'
+]);
+
+Route::post('/comment',[
+    'uses' => 'CommentController@store'
+]);
+
+Route::put('/comment/{id}',[
+    'uses' => 'CommentController@update'
+]);

@@ -12,14 +12,23 @@ class Comment extends Model
      * @var array
      */
     protected $fillable = [
-        'id_user_comment', 'id_user_receive', 'comment',
+        'id_user_comment', 'id_collaborator', 'comment',
     ];
+
     /**
      * Get the user record associated with the comment.
      */
     public function user()
     {
-        return $this->hasOne('App\User');
+        return $this->belongsTo('App\User');
+    }
+
+    /**
+     * Get the collaborator record associated with the comment.
+     */
+    public function collaborator()
+    {
+        return $this->belongsTo('App\Collaborator');
     }
 
 }

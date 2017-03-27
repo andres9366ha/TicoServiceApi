@@ -28,4 +28,11 @@ class Collaborator extends Model
     {
         return $this->hasOne('App\Service');
     }
+
+    public function comment()
+    {
+        return $this->hasMany('App\Comment');
+    }
+
+
 }

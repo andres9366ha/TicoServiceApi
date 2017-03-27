@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Service;
+use JWTAuth;
 use Illuminate\Http\Request;
 
 class ServiceController extends Controller
@@ -29,6 +30,10 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
+//        if(! $user = JWTAuth::parseToken()->authenticate()){
+//            return response()->json(['message' => 'Usuario no autentificado'], 404);
+//        }
+        $user = JWTAuth::parseToken()->toUser();
         $this->validate($request, [
             'name' => 'required|unique:services',
             'description' => 'required',
@@ -38,7 +43,7 @@ class ServiceController extends Controller
         $service->name = $request->input('name');
         $service->description = $request->input('description');
         $service->save();
-        return response()->json(['service' => $service], 201);
+        return response()->json(['service' => $service, 'user' => $user], 201);
     }
 
     /**

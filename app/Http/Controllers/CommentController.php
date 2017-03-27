@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Comment;
+use App\User;
+use App\Collaborator;
 use Illuminate\Http\Request;
 
 class CommentController extends Controller
@@ -27,9 +29,23 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id_user_comm, $id_user_rec)
+    public function store(Request $request)
     {
+        $this->validate($request, [
+            'comment' => 'required',
+        ]);
 
+        $user = User::find($request->input('id_user_comm'));
+        $collab = Collaborator::find($request->input('id_collab'));
+        if(!$user || !$collab){
+            return response()->json(['message' => 'Error en registro de comentario'], 404);
+        }
+
+        $comment = new Comment();
+        $comment->comment = $request->input('comment');
+        $comment->id_user_comment = $request->input('id_user_comm');
+        $comment->id_collab = $request->input('id_collab');
+        return response()->json(['comment' => $comment], 201);
     }
 
     /**
@@ -40,11 +56,11 @@ class CommentController extends Controller
      */
     public function show($id)
     {
-        $service = Service::find($id);
-        if(!$service){
-            return response()->json(['message' => 'Servicio no existente'], 404);
+        $comment = Comment::find($id);
+        if(!$comment){
+            return response()->json(['message' => 'Comentario no existente'], 404);
         }
-        return response()->json($service,200);
+        return response()->json($comment,200);
     }
 
     /**
@@ -56,14 +72,26 @@ class CommentController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $service = Service::find($id);
-        if(!$service){
-            return response()->json(['message' => 'Servicio no existente'], 404);
+        $comment = Comment::find($id);
+        if(!$comment)
+        {
+            return response()->json(['message' => 'Coomentario no existente'], 404);
         }
-        $service->name = $request->input('name');
-        $service->description = $request->input('description');
-        $service->save();
-        return response()->json(['service' => $service], 200);
+
+        $this->validate($request, [
+            'comment' => 'required',
+        ]);
+
+        $user = User::find($request->input('id_user_comm'));
+        $collab = Collaborator::find($request->input('id_collab'));
+
+        if(!$user || !$collab){
+            return response()->json(['message' => 'Error en registro de comentario'], 404);
+        }
+        $comment = new Comment();
+        $comment->comment = $request->input('comment');
+        $comment->save();
+        return response()->json(['comment' => $comment], 200);
     }
 
     /**
@@ -74,8 +102,8 @@ class CommentController extends Controller
      */
     public function destroy($id)
     {
-        $service = Service::find($id);
-        $service->delete();
-        return response()->json(['message' => 'Servicio eliminado']);
+        $comment = Comment::find($id);
+        $comment->delete();
+        return response()->json(['message' => 'Comentario eliminado']);
     }
 }
