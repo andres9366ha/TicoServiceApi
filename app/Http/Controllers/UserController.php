@@ -4,11 +4,22 @@ namespace App\Http\Controllers;
 
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
+use DB;
+use Mail;
 
 class UserController extends Controller
 {
+    public function index()
+    {
+        $users = User::all();
+        $response = [
+            'users' => $users
+        ];
+        return response()->json($response,200);
+    }
 
     public function store(Request $request)
     {
@@ -24,13 +35,14 @@ class UserController extends Controller
             'last_name' => $request->input('last_name'),
             'phone' => $request->input('phone'),
             'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password'))
+            'password' => Hash::make($request->input('password'))
         ]);
 
         $user->save();
+
         return response()->json([
             'message' => 'Usuario creado exitosamente'
-        ], 201);
+        ], 200);
     }
 
     public function login(Request $request)
@@ -73,15 +85,6 @@ class UserController extends Controller
         $user->password = $request->input('password');
         $user->save();
         return response()->json(['user' => $user], 200);
-    }
-
-    public function index()
-    {
-        $users = User::all();
-        $response = [
-            'users' => $users
-        ];
-        return response()->json($response,200);
     }
 
     /**

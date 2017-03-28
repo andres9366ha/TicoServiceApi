@@ -33,7 +33,7 @@ Route::post('/user/login', [
     'uses' => 'UserController@login'
 ]);
 
-Route::put('/user/{id}',[
+Route::patch('/user/{id}',[
     'uses' => 'UserController@update',
     'middleware' => 'auth.jwt'
 ]);
@@ -50,7 +50,7 @@ Route::post('/service',[
     'uses' => 'ServiceController@store'
 ]);
 
-Route::put('/service/{id}',[
+Route::patch('/service/{id}',[
     'uses' => 'ServiceController@update',
     'middleware' => 'auth.jwt'
 ]);
@@ -68,7 +68,7 @@ Route::post('/comment',[
     'uses' => 'CommentController@store'
 ]);
 
-Route::put('/comment/{id}',[
+Route::patch('/comment/{id}',[
     'uses' => 'CommentController@update',
     'middleware' => 'auth.jwt'
 ]);
@@ -87,7 +87,7 @@ Route::post('/collaborator',[
     'uses' => 'CollaboratorController@store'
 ]);
 
-Route::put('/collaborator/{id}',[
+Route::patch('/collaborator/{id}',[
     'uses' => 'CollaboratorController@update',
     'middleware' => 'auth.jwt'
 ]);

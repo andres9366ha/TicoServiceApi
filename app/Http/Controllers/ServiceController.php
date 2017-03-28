@@ -30,9 +30,6 @@ class ServiceController extends Controller
      */
     public function store(Request $request)
     {
-//        if(! $user = JWTAuth::parseToken()->authenticate()){
-//            return response()->json(['message' => 'Usuario no autentificado'], 404);
-//        }
         $user = JWTAuth::parseToken()->toUser();
         $this->validate($request, [
             'name' => 'required|unique:services',
