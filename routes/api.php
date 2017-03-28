@@ -91,3 +91,8 @@ Route::patch('/collaborator/{id}',[
     'uses' => 'CollaboratorController@update',
     'middleware' => 'auth.jwt'
 ]);
+
+
+Route::patch('/user/userActivation/{token}',[
+    'uses' => 'UserController@userActivation'
+]);
