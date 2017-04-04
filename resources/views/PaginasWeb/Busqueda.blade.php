@@ -6,8 +6,6 @@
 @section('content')
 
 
-
-
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
@@ -21,7 +19,7 @@
 
     <ul class="nav navbar-nav navbar-right">
       <li><a href="{{ url('registro') }}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-      <li><a href="{{ url('/') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li><a href="{{ url('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
     </ul>
   </div>
 </nav>
