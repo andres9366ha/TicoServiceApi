@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('PaginasWeb.Busqueda');
+});
+
+Route::get('registro', function(){
+      return view('PaginasWeb.registro');
 });
