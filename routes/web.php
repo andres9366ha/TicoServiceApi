@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('PaginasWeb.Busqueda');
+    return view('PaginasWeb.busqueda');
 });
 
 Route::get('registro', function(){
@@ -21,4 +21,8 @@ Route::get('registro', function(){
 
 Route::get('login', function(){
       return view('PaginasWeb.login');
+});
+
+Route::get('busqueda', function(){
+      return view('PaginasWeb.busqueda');
 });
