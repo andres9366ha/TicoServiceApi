@@ -16,7 +16,7 @@ class UserController extends Controller
 
   protected $redirectTo = '/home';
 
-  
+
     public function index()
     {
         $users = User::all();
@@ -70,20 +70,27 @@ class UserController extends Controller
         $credentials = $request->only('email', 'password');
         try{
             if(!$token = JWTAuth::attempt($credentials)){
-                return response()->json([
-                    'error' => 'Credenciales Invalidas'
-                ], 401);
+                // return response()->json([
+                //     'error' => 'Credenciales Invalidas'
+                // ], 401);
+                flash('Credenciales Invalidas' ,'danger');
+                return view('PaginasWeb.login');
+
             }
         }catch (JWTException $e){
-            return response()->json([
-                'error' => 'No se ha podido crear el token'
-            ], 500);
+            // return response()->json([
+            //     'error' => 'No se ha podido crear el token'
+            // ], 500);
+            flash('No se a podido crear el token' ,'danger');
+            return view('PaginasWeb.login');
         }
         $datos = DB::table('users')->where('email',$request['email'])->first();
         if ($datos->is_activated ==0)
         {
-            return response()->json(['error'=>array(['code'=>422,'message'=>'Verifique su bandeja de correos para activar su cuenta.Su cuenta no esta activa'])],422);
-
+            // return response()->json(['error'=>array([
+            //   'code'=>422,'message'=>'Verifique su bandeja de correos para activar su cuenta.Su cuenta no esta activa'])],422);
+            flash('Verifique su bandeja de correos para activar su cuenta.Su cuenta no esta activa' ,'danger');
+            return view('PaginasWeb.login');
         }
         return response()->json([
             'token' => $token
