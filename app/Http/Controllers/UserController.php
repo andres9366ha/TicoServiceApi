@@ -12,6 +12,11 @@ use Mail;
 
 class UserController extends Controller
 {
+
+
+  protected $redirectTo = '/home';
+
+  
     public function index()
     {
         $users = User::all();
