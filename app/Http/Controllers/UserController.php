@@ -53,7 +53,7 @@ class UserController extends Controller
 
         return response()->json([
             'message' => 'Usuario creado exitosamente'
-        ], 200);
+        ], 201);
     }
 
     public function login(Request $request)
@@ -89,21 +89,13 @@ class UserController extends Controller
     public function userActivation($token){
         $check = DB::table('user_activation')->where('token',$token)->first();
         if(!is_null($check)){
-
             $user = User::find($check->id_user);
             if ($user->is_activated ==1){
                 return response()->json(['error'=>array(['code'=>422,'message'=>'Su cuenta ya esta activada.No podemos activarla de nuevo'])],422);
-                // return redirect()->to('login')->with('success',"user are already actived.");
-
             }
-            // var_dump('no activado');die();
-            // $user->update(['is_activated' => 1]);
             $user->is_activated =1;
             $user->save();
-            // DB::table('user_activations')->where('token',$token)->delete();
             return response()->json(['code'=>'201','mensaje'=>'Su cuenta fue activa'],201);
-
-            // return redirect()->to('login')->with('success',"user active successfully.");
         }
         return response()->json(['error'=>array(['code'=>422,'message'=>'Su codigo es invalido.'])],422);
     }
