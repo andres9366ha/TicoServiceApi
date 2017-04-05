@@ -34,8 +34,16 @@
 
 <div class="row">
 <div class="form-group col-md-offset-4 col-md-4 col-md-offset-4">
+  <!-- <div class="row"> -->
+    <!-- <div class="col-md-offset-4 col-md-4 col-md-offset-4"> -->
+      @include('flash::message')
+    <!-- </div> -->
+  <!-- </div> -->
 {{ Form::button('Iniciar Sesión', array('type' => 'submit', 'class' => 'btn btn-primary')) }}
 </div>
 </div>
 {{ Form::close() }}
+
+
+
 @endsection
