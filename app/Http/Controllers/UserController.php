@@ -9,6 +9,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 use DB;
 use Mail;
+use View;
 
 class UserController extends Controller
 {
@@ -69,6 +70,7 @@ class UserController extends Controller
         ]);
         $credentials = $request->only('email', 'password');
         try{
+
             if(!$token = JWTAuth::attempt($credentials)){
                 // return response()->json([
                 //     'error' => 'Credenciales Invalidas'
@@ -81,7 +83,7 @@ class UserController extends Controller
             // return response()->json([
             //     'error' => 'No se ha podido crear el token'
             // ], 500);
-            flash('No se a podido crear el token' ,'danger');
+            flash('No se ha podido crear el token' ,'danger');
             return view('PaginasWeb.login');
         }
         $datos = DB::table('users')->where('email',$request['email'])->first();
@@ -92,11 +94,22 @@ class UserController extends Controller
             flash('Verifique su bandeja de correos para activar su cuenta.Su cuenta no esta activa' ,'danger');
             return view('PaginasWeb.login');
         }
-        return response()->json([
-            'token' => $token
-        ], 200);
+        // return response()->json([
+        //     'token' => $token
+        // ], 200);
+        // $this->setSession($token);
+          $this->setSession($request);
     }
 
+    public function setSession($request)
+    {
+      $user = DB::table('users')->where('email',$request['email'])->first();
+      $request->session()->put('email', $user->email);
+      $request->session()->put('name', $user->name);
+      $request->session()->put('last_name', $user->last_name);
+      $request->session()->put('phone', $user->phone);
+      return $request;
+    }
 
     public function userActivation($token){
         $check = DB::table('user_activation')->where('token',$token)->first();
