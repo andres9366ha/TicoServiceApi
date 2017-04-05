@@ -42,7 +42,7 @@
 <div class="row">
 <div class="form-group  col-md-offset-4 col-md-4 col-md-offset-4">
   {{ Form::label('email', 'Dirección de E-mail') }}
-  {{ Form::text('email', null, array('placeholder' => 'Introduce tu E-mail', 'class' => 'form-control')) }}
+  {{ Form::email('email', null, array('placeholder' => 'Introduce tu E-mail', 'class' => 'form-control')) }}
 </div>
 </div>
 
@@ -62,6 +62,7 @@
 
 <div class="row">
 <div class="form-group col-md-offset-4 col-md-4 col-md-offset-4">
+@include('flash::message')
 {{ Form::button('Registarme', array('type' => 'submit', 'class' => 'btn btn-primary')) }}
 </div>
 </div>

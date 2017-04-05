@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Validator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Exceptions\JWTException;
 use JWTAuth;
 use DB;
 use Mail;
+use View;
 
 class UserController extends Controller
 {
@@ -26,6 +28,18 @@ class UserController extends Controller
         return response()->json($response,200);
     }
 
+
+    protected function validatorSto(array $data)
+{
+    return Validator::make($data, [
+        'name' => 'required|max:255',
+        'last_name' => 'required|max:255',
+        'phone' => 'required|max:20|min:6',
+        'email' => 'required|email|max:255|unique:users',
+        'password' => 'required|min:6|same:Confirm_password',
+    ]);
+}
+
     protected function create(array $data)
     {
         return User::create([
@@ -34,19 +48,20 @@ class UserController extends Controller
             'phone' => $data['phone'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'type' => 'user',
+            // 'type' => 'user',
         ]);
     }
 
     public function store(Request $request)
     {
         $input = $request->all();
-        $this->validate($request, [
-            'name' => 'required',
-            'last_name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required'
-        ]);
+        $validator = $this->validatorSto($input);
+
+
+        if (!$validator->passes()){
+          flash('Verifique sus datos','danger');
+          return view('PaginasWeb.registro');
+        }
         $user = $this->create($input)->toArray();
         $user['link'] = str_random(30);
 
@@ -56,9 +71,12 @@ class UserController extends Controller
             $message->subject('Active su Cuenta para Finalizar su Registro en nuestra Aplicación');
         });
 
-        return response()->json([
-            'message' => 'Usuario creado exitosamente'
-        ], 200);
+        // return response()->json([
+        //     'message' => 'Usuario creado exitosamente'
+        // ], 200);
+
+        flash('Usuario creado exitosamente! Verifique su bandeja de Correos','success');
+        return view('PaginasWeb.login');
     }
 
     public function login(Request $request)
@@ -92,9 +110,12 @@ class UserController extends Controller
             flash('Verifique su bandeja de correos para activar su cuenta.Su cuenta no esta activa' ,'danger');
             return view('PaginasWeb.login');
         }
-        return response()->json([
-            'token' => $token
-        ], 200);
+
+        $nombre = 'Fernando';
+     return View::make('PaginasWeb.busqueda')->with('nombre', $nombre);
+        // return response()->json([
+        //     'token' => $token
+        // ], 200);
     }
 
 
@@ -104,18 +125,18 @@ class UserController extends Controller
 
             $user = User::find($check->id_user);
             if ($user->is_activated ==1){
-                return response()->json(['error'=>array(['code'=>422,'message'=>'Su cuenta ya esta activada.No podemos activarla de nuevo'])],422);
-                // return redirect()->to('login')->with('success',"user are already actived.");
+                // return response()->json(['error'=>array(['code'=>422,'message'=>'Su cuenta ya esta activada.No podemos activarla de nuevo'])],422);
+                flash('Su cuenta ya esta activada.No podemos activarla de nuevo','warning');
+                return view('PaginasWeb.login');
 
             }
-            // var_dump('no activado');die();
-            // $user->update(['is_activated' => 1]);
+
             $user->is_activated =1;
             $user->save();
-            // DB::table('user_activations')->where('token',$token)->delete();
-            return response()->json(['code'=>'201','mensaje'=>'Su cuenta fue activa'],201);
+            // return response()->json(['code'=>'201','mensaje'=>'Su cuenta fue activa'],201);
 
-            // return redirect()->to('login')->with('success',"user active successfully.");
+            flash('Su cuenta fue activa!' ,'success');
+            return view('PaginasWeb.login');
         }
         // return response()->json(['error'=>array(['code'=>422,'message'=>'Su codigo es invalido.'])],422);
         flash('Su codigo es invalido' ,'danger');
@@ -133,12 +154,16 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if(!$user){
-            return response()->json(['message' => 'Usuario no existente'], 404);
+            // return response()->json(['message' => 'Usuario no existente'], 404);
+            flash('Usuario no existente' ,'danger');
+            return view('PaginasWeb.login');
         }
         $user->phone = $request->input('phone');
         $user->password = $request->input('password');
         $user->save();
-        return response()->json(['user' => $user], 200);
+        // return response()->json(['user' => $user], 200);
+        flash('Actualizado con exito' ,'success');
+        return view('PaginasWeb.login');
     }
 
     /**
@@ -151,7 +176,9 @@ class UserController extends Controller
     {
         $user = User::find($id);
         if(!$user){
-            return response()->json(['message' => 'Usuario no existente'], 404);
+            // return response()->json(['message' => 'Usuario no existente'], 404);
+            flash('Usuario no existente' ,'danger');
+            return view('PaginasWeb.login');
         }
         return response()->json($user,200);
     }

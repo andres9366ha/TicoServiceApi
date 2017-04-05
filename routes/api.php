@@ -93,6 +93,6 @@ Route::patch('/collaborator/{id}',[
 ]);
 
 
-Route::patch('/user/userActivation/{token}',[
-    'uses' => 'UserController@userActivation'
-]);
+// Route::patch('/user/userActivation/{token}',[
+//     'uses' => 'UserController@userActivation'
+// ]);

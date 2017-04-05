@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('PaginasWeb.busqueda');
 });
 
+Route::get('/user/activation/{token}',
+'UserController@userActivation');
+
+
 Route::get('registro', function(){
       return view('PaginasWeb.registro');
 });
