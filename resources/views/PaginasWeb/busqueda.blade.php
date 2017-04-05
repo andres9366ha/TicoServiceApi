@@ -19,8 +19,8 @@
     </ul>
 
     <ul class="nav navbar-nav navbar-right">
-      <li><a href="{{ url('registro') }}"><span class="glyphicon glyphicon-user"></span> Registrarse</a></li>
-      <li><a href="{{ url('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+      <li id="register"><a href="{{ url('registro') }}"><span class="glyphicon glyphicon-user"></span>{{ isset($name) ? $name : 'Registrarse' }}</a></li>
+      <li id="login"><a href="{{ url('login') }}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
     </ul>
   </div>
 </nav>
@@ -37,6 +37,14 @@
 </div>
 </div>
 {{ Form::close() }}
-
-<h1>{{ $name }}</h1>
 @endsection
+
+<script type="text/javascript">
+
+    var login = document.getElementById('login');
+    var register = document.getElementById('register');
+        = showContent;
+        // Hide content divs by default
+//        getContentDiv(link).style.display = 'none';
+
+</script>​

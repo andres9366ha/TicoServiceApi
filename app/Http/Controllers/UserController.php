@@ -99,6 +99,8 @@ class UserController extends Controller
         // ], 200);
         // $this->setSession($token);
           $this->setSession($request);
+          $name = 'byron testing view';
+          return redirect('/');
     }
 
     public function setSession($request)
