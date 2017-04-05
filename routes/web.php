@@ -17,7 +17,7 @@ Route::get('login', function(){
 
 
 Route::get('/', function () {
-    return view('PaginasWeb.busqueda');
+    return view('PaginasWeb.busqueda', ['name' => session('name')]);
 });
 
 Route::get('registro', function(){
