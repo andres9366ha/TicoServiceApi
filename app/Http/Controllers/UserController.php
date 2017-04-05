@@ -117,7 +117,9 @@ class UserController extends Controller
 
             // return redirect()->to('login')->with('success',"user active successfully.");
         }
-        return response()->json(['error'=>array(['code'=>422,'message'=>'Su codigo es invalido.'])],422);
+        // return response()->json(['error'=>array(['code'=>422,'message'=>'Su codigo es invalido.'])],422);
+        flash('Su codigo es invalido' ,'danger');
+        return view('PaginasWeb.login');
     }
 
     /**
