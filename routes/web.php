@@ -11,6 +11,11 @@
 |
 */
 
+Route::get('login', function(){
+    return view('PaginasWeb.login');
+});
+
+
 Route::get('/', function () {
     return view('PaginasWeb.busqueda');
 });
@@ -19,10 +24,12 @@ Route::get('registro', function(){
       return view('PaginasWeb.registro');
 });
 
-Route::get('login', function(){
-      return view('PaginasWeb.login');
-});
+
 
 Route::get('busqueda', function(){
       return view('PaginasWeb.busqueda');
+});
+
+Route::get('servicios', function(){
+      return view('PaginasWeb.servicios');
 });

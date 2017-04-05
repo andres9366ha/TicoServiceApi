@@ -16,10 +16,11 @@ class ServiceController extends Controller
     public function index()
     {
         $services = Service::all();
-        $response = [
-            'services' => $services
-        ];
-        return response()->json($response,200);
+        // $response = [
+        //     'services' => $services
+        // ];
+        // return response()->json($response,200);
+        return view('PaginasWeb.servicios')->with('services', $services);
     }
 
     /**
@@ -31,6 +32,12 @@ class ServiceController extends Controller
     public function store(Request $request)
     {
         $user = JWTAuth::parseToken()->toUser();
+        // if($user->type == 'user'){
+        //   //impide que se muestre opción para agregar servicios
+        //   dd('equals');
+        // }else{
+        //   dd('no equals');
+        // }
         $this->validate($request, [
             'name' => 'required|unique:services',
             'description' => 'required',
