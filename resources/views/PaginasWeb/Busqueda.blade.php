@@ -24,7 +24,7 @@
     </ul>
   </div>
 </nav>
-
+<h1>fsdf</h1>
 {{ Form::open(array('url' => 'api/user/login', 'method' => 'POST'), array('role' => 'form')) }}
 <div class="row">
 <div class="form-group  col-md-offset-3 col-md-4 ">
