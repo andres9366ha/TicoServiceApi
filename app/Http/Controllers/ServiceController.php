@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Service;
 use JWTAuth;
 use Illuminate\Http\Request;
+use DB;
 
 class ServiceController extends Controller
 {
@@ -19,7 +20,7 @@ class ServiceController extends Controller
         $response = [
             'services' => $services
         ];
-        return response()->json($response,200);
+        return response()->json(['services' => $services, 'codigo' => 200]);
     }
 
     /**
@@ -28,19 +29,26 @@ class ServiceController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $token)
     {
-        $user = JWTAuth::parseToken()->toUser();
-        $this->validate($request, [
-            'name' => 'required|unique:services',
+
+
+      $user = JWTAuth::toUser($token);
+      if($user->type == 'user'){
+                  return response()->json(['message' => 'No tiene permisos', 'codigo' => 401]);
+
+      }
+
+      $this->validate($request, [
+            'name' => 'required',
             'description' => 'required',
         ]);
 
         $service = new Service();
-        $service->name = $request->input('name');
-        $service->description = $request->input('description');
+        $service->name = $request->name;
+        $service->description = $request->description;
         $service->save();
-        return response()->json(['service' => $service, 'user' => $user], 201);
+        return response()->json(['message' => 'Servicio Creado', 'codigo' => 200]);
     }
 
     /**
@@ -53,9 +61,21 @@ class ServiceController extends Controller
     {
         $service = Service::find($id);
         if(!$service){
-            return response()->json(['message' => 'Servicio no existente'], 404);
+            return response()->json(['message' => 'Servicio no existente', 'codigo' => 404]);
         }
-        return response()->json($service,200);
+        return response()->json(['service' => $service, 'codigo' => 200]);
+    }
+
+
+  public function showByName($name)
+    {
+
+    $service =Service::where('name', $name)->first();
+
+        if(!$service){
+            return response()->json(['message' => 'Servicio no encontrado', 'codigo' => 404]);
+        }
+        return response()->json(['service' => $service, 'codigo' => 200]);
     }
 
     /**
@@ -69,12 +89,12 @@ class ServiceController extends Controller
     {
         $service = Service::find($id);
         if(!$service){
-            return response()->json(['message' => 'Servicio no existente'], 404);
+            return response()->json(['message' => 'Servicio no existente', 'codigo' =>'404']);
         }
-        $service->name = $request->input('name');
-        $service->description = $request->input('description');
+        $service->name = $request->name;
+        $service->description = $request->description;
         $service->save();
-        return response()->json(['service' => $service], 200);
+        return response()->json(['message' => 'Servicio Actualizado', 'service' => $service, 'codigo' =>'200']);
     }
 
     /**
@@ -86,7 +106,34 @@ class ServiceController extends Controller
     public function destroy($id)
     {
         $service = Service::find($id);
+        if(!$service){
+            return response()->json(['message' => 'Servicio no existente', 'codigo' =>'404']);
+        }
         $service->delete();
-        return response()->json(['message' => 'Servicio eliminado']);
+        return response()->json(['message' => 'Servicio eliminado', 'codigo' => '200']);
     }
+
+
+
+  public function myService($token)
+    {
+
+        $user = JWTAuth::toUser($token);
+
+         $userid =$user->id;
+
+    $collaborator = DB::table('collaborators')->where('id_user', $userid)->get();
+    return response()->json(['collaborator' => $collaborator, 'codigo' =>'200']);
+//         $service = Service::find($collaborator->array[0]);
+//        return response()->json(['message' => $service, 'codigo' =>'404']);
+/*
+        if(!$collaborator){
+            return response()->json(['message' => 'No tienes servicios', 'codigo' =>'404']);
+        }
+        return response()->json(['message' => 'Datos encontrados', 'collaborator' => $collaborator,
+                                 'service' => $service, 'codigo' => '200']); */
+    }
+
+
+
 }

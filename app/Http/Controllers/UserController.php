@@ -36,7 +36,7 @@ class UserController extends Controller
         'last_name' => 'required|max:255',
         'phone' => 'required|max:20|min:6',
         'email' => 'required|email|max:255|unique:users',
-        'password' => 'required|min:6|same:Confirm_password',
+        'password' => 'required|min:6|same:password_confirmation',
     ]);
 }
 
@@ -59,8 +59,9 @@ class UserController extends Controller
 
 
         if (!$validator->passes()){
-          flash('Verifique sus datos','danger');
-          return view('PaginasWeb.registro');
+         return response()->json([
+             'message' => 'Verifique sus errores', 'errors'  => $validator->errors()->all(), 'codigo' => 406
+         ]);
         }
         $user = $this->create($input)->toArray();
         $user['link'] = str_random(30);
@@ -71,29 +72,31 @@ class UserController extends Controller
             $message->subject('Active su Cuenta para Finalizar su Registro en nuestra Aplicación');
         });
 
-        // return response()->json([
-        //     'message' => 'Usuario creado exitosamente'
-        // ], 200);
+         return response()->json([
+             'message' => 'Usuario creado exitosamente', 'codigo' => 200
+         ], 200);
 
-        flash('Usuario creado exitosamente! Verifique su bandeja de Correos','success');
-        return view('PaginasWeb.login');
     }
 
     public function login(Request $request)
     {
-        $this->validate($request, [
+        $validator=$this->validate($request, [
             'email' => 'required|email',
             'password' => 'required'
         ]);
         $credentials = $request->only('email', 'password');
         try{
             if(!$token = JWTAuth::attempt($credentials)){
-                // return response()->json([
-                //     'error' => 'Credenciales Invalidas'
-                // ], 401);
-                flash('Credenciales Invalidas' ,'danger');
-                return view('PaginasWeb.login');
+/*                  return response()->json([
+             'message' => 'Credenciales Invalidas', 'codigo' => 400
+         ], 200); */
 
+               return response()->json([
+                'created' => false,
+                 'message' => 'Credenciales Invalidas',
+                 'codigo' => 401
+
+            ]);
             }
         }catch (JWTException $e){
             // return response()->json([
@@ -111,11 +114,8 @@ class UserController extends Controller
             return view('PaginasWeb.login');
         }
 
-        $nombre = 'Fernando';
-     return View::make('PaginasWeb.busqueda')->with('nombre', $nombre);
-        // return response()->json([
-        //     'token' => $token
-        // ], 200);
+         return response()->json([
+             'token' => $token , 'codigo' => 200]);
     }
 
 
@@ -150,20 +150,18 @@ class UserController extends Controller
      * @param  \App\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $token)
     {
-        $user = User::find($id);
+        $user = JWTAuth::toUser($token);
+
         if(!$user){
-            // return response()->json(['message' => 'Usuario no existente'], 404);
-            flash('Usuario no existente' ,'danger');
-            return view('PaginasWeb.login');
+           return response()->json(['message' => 'Usuario no existente', 'codigo' => 404]);
         }
-        $user->phone = $request->input('phone');
-        $user->password = $request->input('password');
+        $user->name = $request->name;
+        $user->last_name = $request->last_name;
+        $user->phone = $request->phone;
         $user->save();
-        // return response()->json(['user' => $user], 200);
-        flash('Actualizado con exito' ,'success');
-        return view('PaginasWeb.login');
+        return response()->json(['message' => 'Datos Actualizados', 'user' => $user, 'codigo' => 200]);
     }
 
     /**
@@ -181,5 +179,15 @@ class UserController extends Controller
             return view('PaginasWeb.login');
         }
         return response()->json($user,200);
+    }
+
+
+
+      public function detallesUser($token)
+    {
+
+    	   $user = JWTAuth::toUser($token);
+
+        return response()->json(['user' => $user, 'codigo' => 200]);
     }
 }

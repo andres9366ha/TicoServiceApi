@@ -31,27 +31,33 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, $token)
     {
 
-        $this->validate($request, [
+      $this->validate($request, [
             'comment' => 'required',
         ]);
-        $user_comm = JWTAuth::parseToken()->toUser();
-        //$user = User::find($request->input('id_user_comm'));
-        $id_receive = $request->input('id_collab');
+      if($token == null){
+          return response()->json(['message' => 'Error en registro de comentario', 'codigo' => 401]);
+      }
+
+      $user_comm = JWTAuth::toUser($token);
+
+      $id_receive = $request->coll_id;
 
         if(!$user_comm || !$id_receive){
-            return response()->json(['message' => 'Error en registro de comentario'], 404);
+            return response()->json(['message' => 'Error en registro de comentario', 'codigo' => 401]);
         }
 
         $comment = new Comment();
-        $comment->comment = $request->input('comment');
+        $comment->comment = $request->comment;
         $comment->id_user_comm = $user_comm->id;
-        $comment->id_user_collab = $request->input('id_collab');
+        $comment->id_user_collab = $id_receive;
         $comment->save();
-        return response()->json(['comment' => $comment], 200);
+        return response()->json(['comment' => $comment, 'codigo' => 201]);
     }
+
+
 
     /**
      * Display the specified resource.

@@ -22,7 +22,7 @@ class CreateCommentsTable extends Migration
             $table->foreign('id_user_comm')
                 ->references('id')->on('users')->onDelete('cascade');
             $table->foreign('id_user_collab')
-                ->references('id')->on('users')->onDelete('cascade');
+                ->references('id')->on('collaborators')->onDelete('cascade');
             $table->timestamps();
         });
     }
